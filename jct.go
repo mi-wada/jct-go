@@ -23,6 +23,11 @@ func Tax(amount float64, at time.Time) float64 {
 	return amount * Rate(at)
 }
 
+// Total returns the total amount (including tax) for the given amount at the specified time.
+func Total(amount float64, at time.Time) float64 {
+	return amount + Tax(amount, at)
+}
+
 type rate struct {
 	startDate time.Time
 	rate      float64

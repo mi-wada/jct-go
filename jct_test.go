@@ -117,3 +117,50 @@ func TestTax(t *testing.T) {
 		})
 	}
 }
+
+func TestTotal(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		amount float64
+		at     time.Time
+		want   float64
+	}{
+		{
+			amount: 100,
+			at:     time.Date(1989, 4, 1, 0, 0, 0, 0, tz.JST).Add(-1 * time.Nanosecond),
+			want:   100,
+		},
+		{
+			amount: 100,
+			at:     time.Date(1989, 4, 1, 0, 0, 0, 0, tz.JST),
+			want:   103,
+		},
+		{
+			amount: 100,
+			at:     time.Date(1997, 4, 1, 0, 0, 0, 0, tz.JST),
+			want:   105,
+		},
+		{
+			amount: 100,
+			at:     time.Date(2014, 4, 1, 0, 0, 0, 0, tz.JST),
+			want:   108,
+		},
+		{
+			amount: 100,
+			at:     time.Date(2019, 10, 1, 0, 0, 0, 0, tz.JST),
+			want:   110,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("Total(%v, %v)", tt.amount, tt.at), func(t *testing.T) {
+			t.Parallel()
+
+			got := jct.Total(tt.amount, tt.at)
+			if got != tt.want {
+				t.Errorf("Total(%v, %v) = %v, want %v", tt.amount, tt.at, got, tt.want)
+			}
+		})
+	}
+}
