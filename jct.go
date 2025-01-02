@@ -18,6 +18,11 @@ func Rate(at time.Time) float64 {
 	return 0.0
 }
 
+// Tax returns the tax amount for the given amount at the specified time.
+func Tax(amount float64, at time.Time) float64 {
+	return amount * Rate(at)
+}
+
 type rate struct {
 	startDate time.Time
 	rate      float64
