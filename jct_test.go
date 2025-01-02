@@ -10,6 +10,26 @@ import (
 	tz "github.com/mi-wada/jct-go/internal"
 )
 
+func ExampleTax() {
+	amount := int64(100)
+	at := time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC)
+
+	tax := jct.Tax(amount, at)
+
+	fmt.Println(tax)
+	// Output: 10
+}
+
+func ExampleTotal() {
+	amount := int64(100)
+	at := time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC)
+
+	total := jct.Total(amount, at)
+
+	fmt.Println(total)
+	// Output: 110
+}
+
 func TestRate(t *testing.T) {
 	t.Parallel()
 
