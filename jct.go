@@ -1,3 +1,4 @@
+// Package jct provides functions to calculate the Japanese Consumption Tax.
 package jct
 
 import (
