@@ -1,53 +1,62 @@
 package jct
 
 import (
+	"math/big"
 	"time"
 
 	tz "github.com/mi-wada/jct-go/internal"
 )
 
 // Rate returns the tax rate applicable at the specified time.
-// If the time is before the earliest known rate, it returns 0.0.
-func Rate(at time.Time) float64 {
+// If the time is before the earliest known rate, it returns big.NewRat(0, 1).
+func Rate(at time.Time) *big.Rat {
 	for i := len(rates) - 1; i >= 0; i-- {
 		if at.Equal(rates[i].startDate) || at.After(rates[i].startDate) {
 			return rates[i].rate
 		}
 	}
 
-	return 0.0
+	return big.NewRat(0, 1)
 }
 
 // Tax returns the tax amount for the given amount at the specified time.
-func Tax(amount float64, at time.Time) float64 {
-	return amount * Rate(at)
+// The tax amount is rounded down to the nearest integer.
+func Tax(amount int64, at time.Time) int64 {
+	amountRat := new(big.Rat).SetInt64(amount)
+	r := Rate(at)
+
+	taxRat := new(big.Rat).Mul(amountRat, r)
+	taxBigint := new(big.Int).Div(taxRat.Num(), taxRat.Denom())
+
+	return taxBigint.Int64()
 }
 
 // Total returns the total amount (including tax) for the given amount at the specified time.
-func Total(amount float64, at time.Time) float64 {
+// The total amount is rounded down to the nearest integer.
+func Total(amount int64, at time.Time) int64 {
 	return amount + Tax(amount, at)
 }
 
 type rate struct {
 	startDate time.Time
-	rate      float64
+	rate      *big.Rat
 }
 
 var rates = []rate{
 	{
 		startDate: time.Date(1989, 4, 1, 0, 0, 0, 0, tz.JST),
-		rate:      0.03,
+		rate:      big.NewRat(3, 100),
 	},
 	{
 		startDate: time.Date(1997, 4, 1, 0, 0, 0, 0, tz.JST),
-		rate:      0.05,
+		rate:      big.NewRat(5, 100),
 	},
 	{
 		startDate: time.Date(2014, 4, 1, 0, 0, 0, 0, tz.JST),
-		rate:      0.08,
+		rate:      big.NewRat(8, 100),
 	},
 	{
 		startDate: time.Date(2019, 10, 1, 0, 0, 0, 0, tz.JST),
-		rate:      0.10,
+		rate:      big.NewRat(10, 100),
 	},
 }

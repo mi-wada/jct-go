@@ -2,6 +2,7 @@ package jct_test
 
 import (
 	"fmt"
+	"math/big"
 	"testing"
 	"time"
 
@@ -15,47 +16,47 @@ func TestRate(t *testing.T) {
 	tests := []struct {
 		name string
 		at   time.Time
-		want float64
+		want *big.Rat
 	}{
 		{
 			name: "No consumption tax era",
 			at:   time.Date(1989, 4, 1, 0, 0, 0, 0, tz.JST).Add(-1 * time.Nanosecond),
-			want: 0.00,
+			want: big.NewRat(0, 1),
 		},
 		{
 			name: "Start of 0.03",
 			at:   time.Date(1989, 4, 1, 0, 0, 0, 0, tz.JST),
-			want: 0.03,
+			want: big.NewRat(3, 100),
 		},
 		{
 			name: "End of 0.03",
 			at:   time.Date(1997, 4, 1, 0, 0, 0, 0, tz.JST).Add(-1 * time.Nanosecond),
-			want: 0.03,
+			want: big.NewRat(3, 100),
 		},
 		{
 			name: "Start of 0.05",
 			at:   time.Date(1997, 4, 1, 0, 0, 0, 0, tz.JST),
-			want: 0.05,
+			want: big.NewRat(5, 100),
 		},
 		{
 			name: "End of 0.05",
 			at:   time.Date(2014, 4, 1, 0, 0, 0, 0, tz.JST).Add(-1 * time.Nanosecond),
-			want: 0.05,
+			want: big.NewRat(5, 100),
 		},
 		{
 			name: "Start of 0.08",
 			at:   time.Date(2014, 4, 1, 0, 0, 0, 0, tz.JST),
-			want: 0.08,
+			want: big.NewRat(8, 100),
 		},
 		{
 			name: "End of 0.08",
 			at:   time.Date(2019, 10, 1, 0, 0, 0, 0, tz.JST).Add(-1 * time.Nanosecond),
-			want: 0.08,
+			want: big.NewRat(8, 100),
 		},
 		{
 			name: "Start of 0.10",
 			at:   time.Date(2019, 10, 1, 0, 0, 0, 0, tz.JST),
-			want: 0.10,
+			want: big.NewRat(10, 100),
 		},
 	}
 
@@ -64,7 +65,7 @@ func TestRate(t *testing.T) {
 			t.Parallel()
 
 			got := jct.Rate(tt.at)
-			if got != tt.want {
+			if got.Cmp(tt.want) != 0 {
 				t.Errorf("Rate(%v) = %v, want %v", tt.at, got, tt.want)
 			}
 		})
@@ -75,9 +76,9 @@ func TestTax(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		amount float64
+		amount int64
 		at     time.Time
-		want   float64
+		want   int64
 	}{
 		{
 			amount: 100,
@@ -122,9 +123,9 @@ func TestTotal(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		amount float64
+		amount int64
 		at     time.Time
-		want   float64
+		want   int64
 	}{
 		{
 			amount: 100,
