@@ -11,7 +11,7 @@ import (
 // If the time is before the earliest known rate, it returns big.NewRat(0, 1).
 func Rate(at time.Time) *big.Rat {
 	for i := len(rates) - 1; i >= 0; i-- {
-		if at.Equal(rates[i].startDate) || at.After(rates[i].startDate) {
+		if at.Equal(rates[i].from) || at.After(rates[i].from) {
 			return rates[i].rate
 		}
 	}
@@ -38,25 +38,25 @@ func Total(amount int64, at time.Time) int64 {
 }
 
 type rate struct {
-	startDate time.Time
-	rate      *big.Rat
+	from time.Time
+	rate *big.Rat
 }
 
 var rates = []rate{
 	{
-		startDate: time.Date(1989, 4, 1, 0, 0, 0, 0, tz.JST),
-		rate:      big.NewRat(3, 100),
+		from: time.Date(1989, 4, 1, 0, 0, 0, 0, tz.JST),
+		rate: big.NewRat(3, 100),
 	},
 	{
-		startDate: time.Date(1997, 4, 1, 0, 0, 0, 0, tz.JST),
-		rate:      big.NewRat(5, 100),
+		from: time.Date(1997, 4, 1, 0, 0, 0, 0, tz.JST),
+		rate: big.NewRat(5, 100),
 	},
 	{
-		startDate: time.Date(2014, 4, 1, 0, 0, 0, 0, tz.JST),
-		rate:      big.NewRat(8, 100),
+		from: time.Date(2014, 4, 1, 0, 0, 0, 0, tz.JST),
+		rate: big.NewRat(8, 100),
 	},
 	{
-		startDate: time.Date(2019, 10, 1, 0, 0, 0, 0, tz.JST),
-		rate:      big.NewRat(10, 100),
+		from: time.Date(2019, 10, 1, 0, 0, 0, 0, tz.JST),
+		rate: big.NewRat(10, 100),
 	},
 }
