@@ -5,7 +5,7 @@ A Go library for calculating Japanese Consumption Tax. Inspired by [jct](https:/
 ## Install
 
 ```shell
-go get github.com/mi-wada/jct-go
+go get github.com/mi-wada/jct-go@latest
 ```
 
 ## Requirements
