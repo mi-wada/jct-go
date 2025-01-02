@@ -5,7 +5,7 @@ import (
 	"math/big"
 	"time"
 
-	tz "github.com/mi-wada/jct-go/internal"
+	"github.com/mi-wada/jct-go/internal/tz"
 )
 
 // Rate returns the tax rate applicable at the specified time.
