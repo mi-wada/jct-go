@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/mi-wada/jct-go"
-	tz "github.com/mi-wada/jct-go/internal"
+	"github.com/mi-wada/jct-go/internal/tz"
 )
 
 func ExampleTax() {
